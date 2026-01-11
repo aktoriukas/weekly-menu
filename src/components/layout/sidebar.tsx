@@ -56,9 +56,10 @@ const navItems = [
     icon: ShoppingCart,
   },
   {
-    href: "/chat",
+    href: "#",
     label: "AI Chat",
     icon: MessageSquare,
+    comingSoon: true,
   },
   {
     href: "/settings",
@@ -100,6 +101,29 @@ function NavContent({
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
+          const isComingSoon = "comingSoon" in item && item.comingSoon;
+
+          if (isComingSoon) {
+            return (
+              <div
+                key={item.label}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground/50 cursor-not-allowed",
+                  collapsed && "justify-center px-2"
+                )}
+                title={collapsed ? `${item.label} (Coming Soon)` : undefined}
+              >
+                <item.icon className="size-5 shrink-0" />
+                {!collapsed && (
+                  <>
+                    <span className="flex-1">{item.label}</span>
+                    <span className="text-xs bg-muted px-1.5 py-0.5 rounded">Soon</span>
+                  </>
+                )}
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.href}

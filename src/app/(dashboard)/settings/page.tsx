@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { MemberList } from "@/components/household/member-list";
 import { InviteForm } from "@/components/household/invite-form";
+import { PendingInvites } from "@/components/household/pending-invites";
 import { useHousehold } from "@/hooks/use-household";
 import { Loader2, Save, Home, Users, UserPlus } from "lucide-react";
 import { toast } from "sonner";
@@ -97,6 +98,8 @@ export default function SettingsPage() {
           Manage your household and preferences
         </p>
       </div>
+
+      <PendingInvites />
 
       <Card>
         <CardHeader>
