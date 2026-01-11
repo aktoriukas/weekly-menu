@@ -1,0 +1,1 @@
+prisma:build:cd /Users/aktoriukas/Documents/Projects/personal/menu-for-a-week/prisma && npx prisma generate

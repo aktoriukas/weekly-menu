@@ -1,0 +1,157 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// NextAuth adapter models
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+
+  accounts   Account[]
+  sessions   Session[]
+  households HouseholdMember[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Application models
+enum Role {
+  OWNER
+  MEMBER
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
+model Household {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  members       HouseholdMember[]
+  dishes        Dish[]
+  menuDays      MenuDay[]
+  shoppingItems ShoppingItem[]
+  invites       HouseholdInvite[]
+}
+
+model HouseholdMember {
+  id          String   @id @default(cuid())
+  userId      String
+  householdId String
+  role        Role     @default(MEMBER)
+  joinedAt    DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, householdId])
+}
+
+model Dish {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  ingredients String[]
+  category    String?
+  imageUrl    String?
+  householdId String
+  createdAt   DateTime @default(now())
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  meals     Meal[]
+}
+
+model MenuDay {
+  id          String   @id @default(cuid())
+  date        DateTime @db.Date
+  householdId String
+  createdAt   DateTime @default(now())
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  meals     Meal[]
+
+  @@unique([date, householdId])
+}
+
+model Meal {
+  id        String   @id @default(cuid())
+  type      MealType
+  menuDayId String
+  dishId    String
+
+  menuDay MenuDay @relation(fields: [menuDayId], references: [id], onDelete: Cascade)
+  dish    Dish    @relation(fields: [dishId], references: [id], onDelete: Cascade)
+
+  @@unique([menuDayId, type])
+}
+
+model ShoppingItem {
+  id          String   @id @default(cuid())
+  name        String
+  quantity    String?
+  checked     Boolean  @default(false)
+  householdId String
+  createdAt   DateTime @default(now())
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+}
+
+model HouseholdInvite {
+  id          String   @id @default(cuid())
+  email       String
+  householdId String
+  invitedBy   String
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+}
