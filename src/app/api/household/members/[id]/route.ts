@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+
+type TransactionClient = Omit<
+  typeof prisma,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;
 
 // DELETE: Remove member from household (only owner can do this)
 export async function DELETE(
@@ -65,7 +69,7 @@ export async function DELETE(
     }
 
     // Create a new household for the removed user
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    await prisma.$transaction(async (tx: TransactionClient) => {
       // Remove from current household
       await tx.householdMember.delete({
         where: { id: memberIdToRemove },

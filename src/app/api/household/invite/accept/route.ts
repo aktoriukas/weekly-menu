@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+
+type TransactionClient = Omit<
+  typeof prisma,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;
 
 // POST: Accept invitation (find by current user's email, add user to household)
 export async function POST() {
@@ -60,7 +64,7 @@ export async function POST() {
     });
 
     // Use a transaction to handle the membership transfer
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    await prisma.$transaction(async (tx: TransactionClient) => {
       // If user has a current household and is the owner, handle it
       if (currentMembership) {
         if (currentMembership.role === "OWNER") {
