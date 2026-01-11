@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
-import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { signOut, useSession } from "next-auth/react"
+import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@/components/ui/sheet"
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -32,7 +32,7 @@ import {
   ChevronRight,
   Menu,
   ChevronLeft,
-} from "lucide-react";
+} from "lucide-react"
 
 const navItems = [
   {
@@ -66,7 +66,7 @@ const navItems = [
     label: "Settings",
     icon: Settings,
   },
-];
+]
 
 function getInitials(
   name: string | null | undefined,
@@ -78,30 +78,30 @@ function getInitials(
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2);
+      .slice(0, 2)
   }
   if (email) {
-    return email.charAt(0).toUpperCase();
+    return email.charAt(0).toUpperCase()
   }
-  return "U";
+  return "U"
 }
 
 function NavContent({
   collapsed = false,
   onNavigate,
 }: {
-  collapsed?: boolean;
-  onNavigate?: () => void;
+  collapsed?: boolean
+  onNavigate?: () => void
 }) {
-  const pathname = usePathname();
-  const { data: session } = useSession();
+  const pathname = usePathname()
+  const { data: session } = useSession()
 
   return (
     <>
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          const isComingSoon = "comingSoon" in item && item.comingSoon;
+          const isActive = pathname === item.href
+          const isComingSoon = "comingSoon" in item && item.comingSoon
 
           if (isComingSoon) {
             return (
@@ -122,11 +122,13 @@ function NavContent({
                 {!collapsed && (
                   <>
                     <span className="flex-1 truncate">{item.label}</span>
-                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded whitespace-nowrap">Soon</span>
+                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded whitespace-nowrap">
+                      Soon
+                    </span>
                   </>
                 )}
               </div>
-            );
+            )
           }
 
           return (
@@ -151,7 +153,7 @@ function NavContent({
                 </>
               )}
             </Link>
-          );
+          )
         })}
       </nav>
 
@@ -205,12 +207,12 @@ function NavContent({
         </DropdownMenu>
       </div>
     </>
-  );
+  )
 }
 
 // Mobile sidebar (slide-out drawer)
 export function MobileSidebar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -240,12 +242,12 @@ export function MobileSidebar() {
         </div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }
 
 // Desktop sidebar (collapsible)
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false)
 
   return (
     <>
@@ -293,13 +295,13 @@ export function Sidebar() {
         </div>
       </aside>
     </>
-  );
+  )
 }
 
 // Mobile header with hamburger menu
 export function MobileHeader() {
   return (
-    <header className="lg:hidden flex items-center justify-between p-4 border-b bg-card">
+    <header className="lg:hidden flex items-center justify-between p-4 border-b bg-card sticky top-0 z-10">
       <Link href="/dashboard" className="flex items-center gap-2">
         <div className="size-8 rounded-lg bg-primary flex items-center justify-center">
           <UtensilsCrossed className="size-5 text-primary-foreground" />
@@ -308,5 +310,5 @@ export function MobileHeader() {
       </Link>
       <MobileSidebar />
     </header>
-  );
+  )
 }
