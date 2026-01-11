@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       existingDishes.length > 0
         ? `\n\nThe user's household already has these dishes in their library:\n${existingDishes
             .map(
-              (d) =>
+              (d: { name: string; category: string | null; ingredients: string[] }) =>
                 `- ${d.name}${d.category ? ` (${d.category})` : ""}${d.ingredients.length > 0 ? `: ${d.ingredients.slice(0, 5).join(", ")}${d.ingredients.length > 5 ? "..." : ""}` : ""}`
             )
             .join("\n")}\n\nConsider these when making suggestions - avoid suggesting duplicates unless the user specifically asks.`
