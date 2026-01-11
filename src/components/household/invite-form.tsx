@@ -110,7 +110,7 @@ export function InviteForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="invite-email">Invite by email</Label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Input
               id="invite-email"
               type="email"
@@ -118,8 +118,9 @@ export function InviteForm({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isSubmitting}
+              className="flex-1"
             />
-            <Button type="submit" disabled={isSubmitting || !email.trim()}>
+            <Button type="submit" disabled={isSubmitting || !email.trim()} className="w-full sm:w-auto shrink-0">
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
@@ -185,6 +186,7 @@ export function InviteForm({
               variant="outline"
               onClick={() => setInviteToCancel(null)}
               disabled={isCanceling}
+              className="w-full sm:w-auto"
             >
               Keep Invitation
             </Button>
@@ -192,6 +194,7 @@ export function InviteForm({
               variant="destructive"
               onClick={handleCancelInvite}
               disabled={isCanceling}
+              className="w-full sm:w-auto"
             >
               {isCanceling ? (
                 <>

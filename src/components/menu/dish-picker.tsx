@@ -40,7 +40,7 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
   };
 
   return (
-    <div className="w-72 p-3 space-y-3">
+    <div className="w-[calc(100vw-3rem)] sm:w-72 max-w-72 p-3 space-y-3">
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
@@ -66,7 +66,7 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
       <div className="flex flex-wrap gap-1">
         <Badge
           variant={selectedCategory === null ? "default" : "outline"}
-          className="cursor-pointer"
+          className="cursor-pointer text-xs"
           onClick={() => setSelectedCategory(null)}
         >
           All
@@ -75,7 +75,7 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
           <Badge
             key={category}
             variant={selectedCategory === category ? "default" : "outline"}
-            className="cursor-pointer capitalize"
+            className="cursor-pointer capitalize text-xs"
             onClick={() => setSelectedCategory(category)}
           >
             {category}
@@ -84,7 +84,7 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
       </div>
 
       {/* Dish List */}
-      <ScrollArea className="h-48">
+      <ScrollArea className="h-48 max-h-[40vh]">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -99,11 +99,11 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
               <button
                 key={dish.id}
                 onClick={() => handleSelect(dish.id)}
-                className="w-full text-left px-2 py-1.5 rounded-md hover:bg-accent transition-colors text-sm"
+                className="w-full text-left px-2 py-2 rounded-md hover:bg-accent active:bg-accent transition-colors text-sm"
               >
-                <span className="font-medium">{dish.name}</span>
+                <span className="font-medium truncate block">{dish.name}</span>
                 {dish.category && (
-                  <Badge variant="secondary" className="ml-2 text-xs capitalize">
+                  <Badge variant="secondary" className="mt-1 text-xs capitalize">
                     {dish.category}
                   </Badge>
                 )}
@@ -114,7 +114,7 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
       </ScrollArea>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-2 border-t">
+      <div className="flex items-center justify-between pt-2 border-t gap-2">
         {showClear && (
           <Button
             variant="ghost"
@@ -128,7 +128,8 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
         )}
         <Link href="/dishes" className="ml-auto">
           <Button variant="ghost" size="sm">
-            View All Dishes
+            <span className="hidden sm:inline">View All</span>
+            <span className="sm:hidden">All</span>
             <ExternalLink className="size-3 ml-1" />
           </Button>
         </Link>

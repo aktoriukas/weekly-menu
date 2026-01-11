@@ -108,16 +108,21 @@ function NavContent({
               <div
                 key={item.label}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground/50 cursor-not-allowed",
+                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground/50 cursor-not-allowed relative",
                   collapsed && "justify-center px-2"
                 )}
                 title={collapsed ? `${item.label} (Coming Soon)` : undefined}
               >
-                <item.icon className="size-5 shrink-0" />
+                <div className="relative">
+                  <item.icon className="size-5 shrink-0" />
+                  {collapsed && (
+                    <span className="absolute -top-1 -right-1 size-2 bg-muted-foreground/30 rounded-full" />
+                  )}
+                </div>
                 {!collapsed && (
                   <>
-                    <span className="flex-1">{item.label}</span>
-                    <span className="text-xs bg-muted px-1.5 py-0.5 rounded">Soon</span>
+                    <span className="flex-1 truncate">{item.label}</span>
+                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded whitespace-nowrap">Soon</span>
                   </>
                 )}
               </div>

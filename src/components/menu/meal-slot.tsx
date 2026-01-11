@@ -122,7 +122,7 @@ export function MealSlot({
             )}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="p-0" align="start" side="right">
+        <PopoverContent className="p-0" align="start" side="bottom" sideOffset={4}>
           <DishPicker
             onSelect={handleSelectDish}
             onClear={onClearDish}

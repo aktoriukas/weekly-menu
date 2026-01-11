@@ -184,13 +184,13 @@ export default function DishDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4 min-w-0">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0">
             <ArrowLeft className="size-4" />
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold">{dish.name}</h1>
+          <div className="min-w-0">
+            <h1 className="text-2xl font-bold truncate">{dish.name}</h1>
             {category && (
               <Badge variant="secondary" className={categoryColors[category]}>
                 {categoryLabels[category]}
@@ -198,14 +198,14 @@ export default function DishDetailPage() {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setEditDialogOpen(true)}>
-            <Pencil className="size-4 mr-2" />
-            Edit
+        <div className="flex items-center gap-2 pl-14 sm:pl-0">
+          <Button variant="outline" onClick={() => setEditDialogOpen(true)} className="flex-1 sm:flex-none">
+            <Pencil className="size-4 sm:mr-2" />
+            <span className="hidden sm:inline">Edit</span>
           </Button>
-          <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-            <Trash2 className="size-4 mr-2" />
-            Delete
+          <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)} className="flex-1 sm:flex-none">
+            <Trash2 className="size-4 sm:mr-2" />
+            <span className="hidden sm:inline">Delete</span>
           </Button>
         </div>
       </div>
@@ -287,7 +287,7 @@ export default function DishDetailPage() {
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Dish</DialogTitle>
           </DialogHeader>
@@ -305,18 +305,19 @@ export default function DishDetailPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Dish</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="break-words">
               Are you sure you want to delete &quot;{dish.name}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={isDeleting}
+              className="w-full sm:w-auto"
             >
               {isDeleting ? "Deleting..." : "Delete"}
             </Button>

@@ -127,13 +127,13 @@ export function AddIngredientsDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <ShoppingCart className="size-5" />
-            Add to Shopping List?
+            <ShoppingCart className="size-5 shrink-0" />
+            <span className="truncate">Add to Shopping List?</span>
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="break-words">
             {hasIngredients
               ? `Would you like to add ingredients from "${dish.name}" to your shopping list?`
               : `"${dish.name}" has no ingredients listed.`}
@@ -141,30 +141,31 @@ export function AddIngredientsDialog({
         </DialogHeader>
 
         {hasIngredients && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
+          <div className="space-y-3 flex-1 min-h-0">
+            <div className="flex items-center justify-between gap-2">
               <span className="text-sm text-muted-foreground">
                 {selectedIngredients.size} of {dish.ingredients.length} selected
               </span>
-              <Button variant="ghost" size="sm" onClick={toggleAll}>
+              <Button variant="ghost" size="sm" onClick={toggleAll} className="shrink-0">
                 {selectedIngredients.size === dish.ingredients.length
                   ? "Deselect All"
                   : "Select All"}
               </Button>
             </div>
 
-            <ScrollArea className="h-48 border rounded-md p-3">
-              <div className="space-y-2">
+            <ScrollArea className="h-48 max-h-[40vh] border rounded-md p-3">
+              <div className="space-y-3">
                 {dish.ingredients.map((ingredient) => (
-                  <div key={ingredient} className="flex items-center space-x-2">
+                  <div key={ingredient} className="flex items-start gap-3">
                     <Checkbox
                       id={ingredient}
                       checked={selectedIngredients.has(ingredient)}
                       onCheckedChange={() => toggleIngredient(ingredient)}
+                      className="mt-0.5"
                     />
                     <Label
                       htmlFor={ingredient}
-                      className="text-sm font-normal cursor-pointer"
+                      className="text-sm font-normal cursor-pointer leading-tight break-words"
                     >
                       {ingredient}
                     </Label>
@@ -175,14 +176,15 @@ export function AddIngredientsDialog({
           </div>
         )}
 
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={handleSkip} disabled={isAdding}>
+        <DialogFooter>
+          <Button variant="outline" onClick={handleSkip} disabled={isAdding} className="w-full sm:w-auto">
             Skip
           </Button>
           {hasIngredients && (
             <Button
               onClick={handleAddToShoppingList}
               disabled={isAdding || selectedIngredients.size === 0}
+              className="w-full sm:w-auto"
             >
               {isAdding ? (
                 <>

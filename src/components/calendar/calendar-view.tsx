@@ -165,7 +165,7 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Calendar</h1>
           <p className="text-muted-foreground">
@@ -184,7 +184,7 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
           <Button
             variant="outline"
             onClick={handleToday}
-            className="gap-2"
+            className="gap-2 flex-1 sm:flex-none"
           >
             <CalendarDays className="size-4" />
             Today

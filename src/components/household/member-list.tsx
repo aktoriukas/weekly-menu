@@ -152,6 +152,7 @@ export function MemberList({
               variant="outline"
               onClick={() => setMemberToRemove(null)}
               disabled={isRemoving}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
@@ -159,6 +160,7 @@ export function MemberList({
               variant="destructive"
               onClick={handleRemoveMember}
               disabled={isRemoving}
+              className="w-full sm:w-auto"
             >
               {isRemoving ? (
                 <>

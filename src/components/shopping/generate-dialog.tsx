@@ -122,7 +122,7 @@ export function GenerateDialog({ existingItems }: GenerateDialogProps) {
           Generate from Menu
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Generate Shopping List</DialogTitle>
           <DialogDescription>
@@ -131,7 +131,7 @@ export function GenerateDialog({ existingItems }: GenerateDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="space-y-4 py-4 flex-1 min-h-0 overflow-y-auto">
           {/* Date Range Picker */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Date Range</label>
@@ -144,22 +144,23 @@ export function GenerateDialog({ existingItems }: GenerateDialogProps) {
                     !dateRange && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon className="mr-2 size-4" />
-                  {dateRange?.from ? (
-                    dateRange.to ? (
-                      <>
-                        {format(dateRange.from, "LLL dd, y")} -{" "}
-                        {format(dateRange.to, "LLL dd, y")}
-                      </>
+                  <CalendarIcon className="mr-2 size-4 shrink-0" />
+                  <span className="truncate">
+                    {dateRange?.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "LLL dd")} - {format(dateRange.to, "LLL dd, y")}
+                        </>
+                      ) : (
+                        format(dateRange.from, "LLL dd, y")
+                      )
                     ) : (
-                      format(dateRange.from, "LLL dd, y")
-                    )
-                  ) : (
-                    <span>Pick a date range</span>
-                  )}
+                      "Pick a date range"
+                    )}
+                  </span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0" align="center" side="bottom">
                 <Calendar
                   mode="range"
                   defaultMonth={dateRange?.from}
@@ -176,7 +177,7 @@ export function GenerateDialog({ existingItems }: GenerateDialogProps) {
             <label className="text-sm font-medium">
               Preview ({previewIngredients.length} new items)
             </label>
-            <div className="rounded-md border bg-muted/30 p-3 max-h-[200px] overflow-y-auto">
+            <div className="rounded-md border bg-muted/30 p-3 max-h-[30vh] overflow-y-auto">
               {isLoadingMenu ? (
                 <div className="flex items-center justify-center py-4">
                   <Loader2 className="size-4 animate-spin text-muted-foreground" />
@@ -190,7 +191,7 @@ export function GenerateDialog({ existingItems }: GenerateDialogProps) {
               ) : (
                 <div className="flex flex-wrap gap-1.5">
                   {previewIngredients.map((ingredient, index) => (
-                    <Badge key={index} variant="secondary">
+                    <Badge key={index} variant="secondary" className="text-xs">
                       {ingredient}
                     </Badge>
                   ))}
@@ -201,12 +202,13 @@ export function GenerateDialog({ existingItems }: GenerateDialogProps) {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button variant="outline" onClick={() => setOpen(false)} className="w-full sm:w-auto">
             Cancel
           </Button>
           <Button
             onClick={handleGenerate}
             disabled={isGenerating || previewIngredients.length === 0}
+            className="w-full sm:w-auto"
           >
             {isGenerating ? (
               <>
