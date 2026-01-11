@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     });
 
     const existingNames = new Set(
-      existingItems.map((item) => item.name.toLowerCase().trim())
+      existingItems.map((item: { name: string }) => item.name.toLowerCase().trim())
     );
 
     // Filter out duplicates (case-insensitive) and already existing items
