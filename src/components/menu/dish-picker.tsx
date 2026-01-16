@@ -7,20 +7,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, X, ExternalLink, Loader2 } from "lucide-react";
+import { Search, X, ExternalLink, Loader2, Type } from "lucide-react";
 import type { DishCategory } from "@/types";
 import { DISH_CATEGORIES } from "@/types";
 
 interface DishPickerProps {
   onSelect: (dishId: string) => void;
+  onCustomName?: (name: string) => void;
   onClear?: () => void;
   onClose?: () => void;
   showClear?: boolean;
 }
 
-export function DishPicker({ onSelect, onClear, onClose, showClear = false }: DishPickerProps) {
+export function DishPicker({ onSelect, onCustomName, onClear, onClose, showClear = false }: DishPickerProps) {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<DishCategory | null>(null);
+  const [customNameInput, setCustomNameInput] = useState("");
 
   const { dishes, isLoading } = useDishes({ category: selectedCategory });
 
@@ -39,8 +41,56 @@ export function DishPicker({ onSelect, onClear, onClose, showClear = false }: Di
     onClose?.();
   };
 
+  const handleCustomNameSubmit = () => {
+    if (customNameInput.trim() && onCustomName) {
+      onCustomName(customNameInput.trim());
+      setCustomNameInput("");
+      onClose?.();
+    }
+  };
+
   return (
     <div className="w-[calc(100vw-3rem)] sm:w-72 max-w-72 p-3 space-y-3">
+      {/* Custom Name Input */}
+      {onCustomName && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Type className="size-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Quick entry</span>
+          </div>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Type meal name..."
+              value={customNameInput}
+              onChange={(e) => setCustomNameInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleCustomNameSubmit();
+                }
+              }}
+              className="h-9"
+            />
+            <Button
+              size="sm"
+              onClick={handleCustomNameSubmit}
+              disabled={!customNameInput.trim()}
+              className="h-9 px-3"
+            >
+              Add
+            </Button>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-popover px-2 text-muted-foreground">or select dish</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />

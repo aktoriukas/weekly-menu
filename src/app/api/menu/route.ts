@@ -99,7 +99,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { date, mealType, dishId } = body;
+    const { date, mealType, dishId, customName } = body;
 
     // Validate required fields
     if (!date || typeof date !== "string") {
@@ -162,8 +162,8 @@ export async function POST(request: Request) {
       });
     }
 
-    // If dishId is null, remove the meal
-    if (dishId === null) {
+    // If both dishId and customName are null/undefined, remove the meal
+    if (dishId === null && !customName) {
       await prisma.meal.deleteMany({
         where: {
           menuDayId: menuDay.id,
@@ -187,6 +187,7 @@ export async function POST(request: Request) {
     }
 
     // Create or update the meal using upsert
+    // Either dishId or customName should be provided
     const meal = await prisma.meal.upsert({
       where: {
         menuDayId_type: {
@@ -195,12 +196,14 @@ export async function POST(request: Request) {
         },
       },
       update: {
-        dishId,
+        dishId: dishId || null,
+        customName: customName || null,
       },
       create: {
         type: mealType,
         menuDayId: menuDay.id,
-        dishId,
+        dishId: dishId || null,
+        customName: customName || null,
       },
       include: {
         dish: true,

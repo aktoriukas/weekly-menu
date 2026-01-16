@@ -17,7 +17,9 @@ import type { MealType, Dish } from "@/types";
 interface MealSlotProps {
   mealType: MealType;
   dish: Dish | null;
+  customName?: string | null;
   onSelectDish: (dishId: string) => void;
+  onCustomName: (name: string) => void;
   onClearDish: () => void;
   isLoading?: boolean;
   showDishLink?: boolean;
@@ -44,7 +46,9 @@ const mealTypeConfig: Record<MealType, { icon: typeof Sun; label: string; color:
 export function MealSlot({
   mealType,
   dish,
+  customName,
   onSelectDish,
+  onCustomName,
   onClearDish,
   isLoading = false,
   showDishLink = true,
@@ -56,6 +60,10 @@ export function MealSlot({
   const { dishes } = useDishes();
   const config = mealTypeConfig[mealType];
   const Icon = config.icon;
+
+  // Determine display name: dish name takes priority, then custom name
+  const displayName = dish?.name || customName;
+  const hasMeal = !!dish || !!customName;
 
   const handleSelectDish = (dishId: string) => {
     // Find the full dish object
@@ -95,24 +103,24 @@ export function MealSlot({
             disabled={isLoading}
             className={cn(
               "w-full flex items-center gap-2 p-2 rounded-md transition-colors text-left",
-              dish
+              hasMeal
                 ? "bg-accent/50 hover:bg-accent"
                 : "border border-dashed border-muted-foreground/30 hover:border-muted-foreground/50 hover:bg-accent/30",
               isLoading && "opacity-50 cursor-not-allowed"
             )}
           >
             <Icon className={cn("size-4 shrink-0", config.color)} />
-            {dish ? (
-              showDishLink ? (
+            {hasMeal ? (
+              dish && showDishLink ? (
                 <Link
                   href={`/dishes/${dish.id}`}
                   className="text-sm font-medium truncate hover:underline"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {dish.name}
+                  {displayName}
                 </Link>
               ) : (
-                <span className="text-sm font-medium truncate">{dish.name}</span>
+                <span className="text-sm font-medium truncate">{displayName}</span>
               )
             ) : (
               <span className="text-sm text-muted-foreground flex items-center gap-1">
@@ -125,9 +133,10 @@ export function MealSlot({
         <PopoverContent className="p-0" align="start" side="bottom" sideOffset={4}>
           <DishPicker
             onSelect={handleSelectDish}
+            onCustomName={onCustomName}
             onClear={onClearDish}
             onClose={() => setOpen(false)}
-            showClear={!!dish}
+            showClear={hasMeal}
           />
         </PopoverContent>
       </Popover>

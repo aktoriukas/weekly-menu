@@ -85,8 +85,9 @@ export interface Meal {
   id: string;
   type: MealType;
   menuDayId: string;
-  dishId: string;
-  dish?: Dish;
+  dishId: string | null;
+  customName: string | null;
+  dish?: Dish | null;
 }
 
 // ============ Menu Day Types ============

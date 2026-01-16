@@ -106,12 +106,13 @@ export function useMonthMenu({ year, month }: UseMonthMenuOptions) {
 export async function setMeal(
   date: string,
   mealType: MealType,
-  dishId: string | null
+  dishId: string | null,
+  customName?: string | null
 ): Promise<MenuDay> {
   const response = await fetch("/api/menu", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ date, mealType, dishId }),
+    body: JSON.stringify({ date, mealType, dishId, customName }),
   });
 
   if (!response.ok) {

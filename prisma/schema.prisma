@@ -123,13 +123,14 @@ model MenuDay {
 }
 
 model Meal {
-  id        String   @id @default(cuid())
-  type      MealType
-  menuDayId String
-  dishId    String
+  id         String   @id @default(cuid())
+  type       MealType
+  menuDayId  String
+  dishId     String?
+  customName String?
 
   menuDay MenuDay @relation(fields: [menuDayId], references: [id], onDelete: Cascade)
-  dish    Dish    @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  dish    Dish?   @relation(fields: [dishId], references: [id], onDelete: Cascade)
 
   @@unique([menuDayId, type])
 }

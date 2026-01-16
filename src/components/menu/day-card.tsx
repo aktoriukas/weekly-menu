@@ -11,6 +11,7 @@ interface DayCardProps {
   date: Date;
   menuDay: MenuDay | null;
   onSetMeal: (mealType: MealType, dishId: string) => void;
+  onSetCustomMeal: (mealType: MealType, customName: string) => void;
   onClearMeal: (mealType: MealType) => void;
   isLoading?: boolean;
 }
@@ -21,6 +22,7 @@ export function DayCard({
   date,
   menuDay,
   onSetMeal,
+  onSetCustomMeal,
   onClearMeal,
   isLoading = false,
 }: DayCardProps) {
@@ -35,6 +37,13 @@ export function DayCard({
     if (!menuDay) return null;
     const meal = menuDay.meals.find((m) => m.type === mealType);
     return meal?.dish || null;
+  };
+
+  // Get custom name for a meal type
+  const getCustomNameForMeal = (mealType: MealType): string | null => {
+    if (!menuDay) return null;
+    const meal = menuDay.meals.find((m) => m.type === mealType);
+    return meal?.customName || null;
   };
 
   return (
@@ -78,7 +87,9 @@ export function DayCard({
             key={mealType}
             mealType={mealType}
             dish={getDishForMeal(mealType)}
+            customName={getCustomNameForMeal(mealType)}
             onSelectDish={(dishId) => onSetMeal(mealType, dishId)}
+            onCustomName={(name) => onSetCustomMeal(mealType, name)}
             onClearDish={() => onClearMeal(mealType)}
             isLoading={isLoading}
           />

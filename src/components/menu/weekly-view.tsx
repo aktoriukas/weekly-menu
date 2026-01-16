@@ -75,6 +75,31 @@ export function WeeklyView() {
     }
   }
 
+  const handleSetCustomMeal = async (
+    dateStr: string,
+    mealType: MealType,
+    customName: string
+  ) => {
+    const slotKey = `${dateStr}-${mealType}`
+    setLoadingSlots((prev) => new Set(prev).add(slotKey))
+
+    try {
+      await setMeal(dateStr, mealType, null, customName)
+      await mutate()
+      toast.success("Meal added")
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to add meal"
+      )
+    } finally {
+      setLoadingSlots((prev) => {
+        const next = new Set(prev)
+        next.delete(slotKey)
+        return next
+      })
+    }
+  }
+
   const isCurrentWeek = isThisWeek(currentDate, { weekStartsOn: 1 })
 
   return (
@@ -131,6 +156,9 @@ export function WeeklyView() {
               menuDay={menuDay}
               onSetMeal={(mealType, dishId) =>
                 handleSetMeal(dateStr, mealType, dishId)
+              }
+              onSetCustomMeal={(mealType, customName) =>
+                handleSetCustomMeal(dateStr, mealType, customName)
               }
               onClearMeal={(mealType) => handleClearMeal(dateStr, mealType)}
               isLoading={

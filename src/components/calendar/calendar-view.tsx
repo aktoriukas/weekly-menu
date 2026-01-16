@@ -124,6 +124,30 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
     }
   }
 
+  const handleSetCustomMeal = async (mealType: MealType, customName: string) => {
+    if (!selectedDate) return
+
+    const dateStr = format(selectedDate, "yyyy-MM-dd")
+    const slotKey = `${dateStr}-${mealType}`
+    setLoadingSlots((prev) => new Set(prev).add(slotKey))
+
+    try {
+      await setMeal(dateStr, mealType, null, customName)
+      await mutate()
+      toast.success("Meal added")
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to add meal"
+      )
+    } finally {
+      setLoadingSlots((prev) => {
+        const next = new Set(prev)
+        next.delete(slotKey)
+        return next
+      })
+    }
+  }
+
   // Generate calendar days
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -154,18 +178,30 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
     return meal?.dish || null
   }
 
-  // Get meals for a day with dish names
+  const getCustomNameForMeal = (
+    menuDay: MenuDay | null | undefined,
+    mealType: MealType
+  ): string | null => {
+    if (!menuDay) return null
+    const meal = menuDay.meals.find((m) => m.type === mealType)
+    return meal?.customName || null
+  }
+
+  // Get meals for a day with dish names or custom names
   const getMealsForDay = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd")
     const menuDay = menuByDate.get(dateStr)
     if (!menuDay) return { breakfast: null, lunch: null, dinner: null }
 
-    const breakfast =
-      menuDay.meals.find((m) => m.type === "BREAKFAST")?.dish || null
-    const lunch = menuDay.meals.find((m) => m.type === "LUNCH")?.dish || null
-    const dinner = menuDay.meals.find((m) => m.type === "DINNER")?.dish || null
+    const breakfastMeal = menuDay.meals.find((m) => m.type === "BREAKFAST")
+    const lunchMeal = menuDay.meals.find((m) => m.type === "LUNCH")
+    const dinnerMeal = menuDay.meals.find((m) => m.type === "DINNER")
 
-    return { breakfast, lunch, dinner }
+    return {
+      breakfast: breakfastMeal?.dish?.name || breakfastMeal?.customName || null,
+      lunch: lunchMeal?.dish?.name || lunchMeal?.customName || null,
+      dinner: dinnerMeal?.dish?.name || dinnerMeal?.customName || null,
+    }
   }
 
   // Truncate dish name to fit calendar cell
@@ -279,9 +315,9 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
                             isSelected &&
                               "bg-primary-foreground/20 text-primary-foreground"
                           )}
-                          title={meals.breakfast.name}
+                          title={meals.breakfast}
                         >
-                          {truncateName(meals.breakfast.name)}
+                          {truncateName(meals.breakfast)}
                         </div>
                       )}
                       {meals.lunch && (
@@ -291,9 +327,9 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
                             isSelected &&
                               "bg-primary-foreground/20 text-primary-foreground"
                           )}
-                          title={meals.lunch.name}
+                          title={meals.lunch}
                         >
-                          {truncateName(meals.lunch.name)}
+                          {truncateName(meals.lunch)}
                         </div>
                       )}
                       {meals.dinner && (
@@ -303,9 +339,9 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
                             isSelected &&
                               "bg-primary-foreground/20 text-primary-foreground"
                           )}
-                          title={meals.dinner.name}
+                          title={meals.dinner}
                         >
-                          {truncateName(meals.dinner.name)}
+                          {truncateName(meals.dinner)}
                         </div>
                       )}
                     </div>
@@ -367,7 +403,9 @@ export function CalendarView({ initialDate }: CalendarViewProps) {
                     key={mealType}
                     mealType={mealType}
                     dish={getDishForMeal(selectedMenuDay, mealType)}
+                    customName={getCustomNameForMeal(selectedMenuDay, mealType)}
                     onSelectDish={(dishId) => handleSetMeal(mealType, dishId)}
+                    onCustomName={(name) => handleSetCustomMeal(mealType, name)}
                     onClearDish={() => handleClearMeal(mealType)}
                     isLoading={isSlotLoading}
                   />
