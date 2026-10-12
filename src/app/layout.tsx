@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { PersonalAnalytics } from "./PersonalAnalytics";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -121,6 +122,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <Toaster />
+          <PersonalAnalytics />
         </Providers>
       </body>
     </html>
